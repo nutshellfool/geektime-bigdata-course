@@ -48,11 +48,15 @@ public class HBaseApplication {
     try (Connection connection = ConnectionFactory.createConnection(configuration)) {
       Admin admin = connection.getAdmin();
 
-      // Create namespace
-      NamespaceDescriptor namespaceDescriptor = NamespaceDescriptor.create("lirui").build();
+      //1. Create namespace
+      NamespaceDescriptor namespaceDescriptor = NamespaceDescriptor.create(namespace).build();
+      // TODO: check namespace exist or not
       admin.createNamespace(namespaceDescriptor);
+      System.out.println("===============");
+      System.out.println("Create namespace success");
+      System.out.println("===============");
 
-      // Create Table here
+      // 2. Create Table here
       TableDescriptor tableDescriptor = TableDescriptorBuilder.newBuilder(tableName)
           .setColumnFamily(
               ColumnFamilyDescriptorBuilder.newBuilder(columnFamilyNameName.getBytes()).build())
@@ -61,7 +65,19 @@ public class HBaseApplication {
           .setColumnFamily(
               ColumnFamilyDescriptorBuilder.newBuilder(columnFamilyNameScore.getBytes()).build())
           .build();
+      // delete table first
+      if (admin.tableExists(tableName)) {
+        if (admin.isTableDisabled(tableName)) {
+          // disable table before delete it
+          admin.disableTable(tableName);
+          admin.deleteTable(tableName);
+        }
+      }
+
       admin.createTable(tableDescriptor);
+      System.out.println("===============");
+      System.out.println("Create table success");
+      System.out.println("===============");
 
       // insert data
       // https://hbase.apache.org/book.html#_implicit_version_example
@@ -75,10 +91,16 @@ public class HBaseApplication {
       put.addColumn(columnFamilyNameScore.getBytes(), cfScoreProgrammingRow,
           cfScoreProgrammingRowValue);
       table.put(put);
+      System.out.println("===============");
+      System.out.println("Insert data success");
+      System.out.println("===============");
 
       // Fetch single row
       Get get = new Get(cfNameRowValue);
       Result result = table.get(get);
+      System.out.println("===============");
+      System.out.println("Fetch single row success");
+      System.out.println("===============");
       System.out.println("===============");
       System.out.printf("%s : GET result", cfNameRowValue);
       System.out.printf("-> %s", result.toString());
