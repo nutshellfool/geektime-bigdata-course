@@ -6,8 +6,13 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class HBaseApplication {
+
+  private static final Logger logger
+      = LoggerFactory.getLogger(HBaseApplication.class);
 
   public static void main(String[] args) {
     new HBaseApplication().connect();
@@ -25,7 +30,7 @@ public class HBaseApplication {
       HBaseAdmin.available(configuration);
     } catch (IOException e) {
       e.printStackTrace();
-      System.out.println("Hbase is not running");
+      logger.error("Hbase is not running");
       return;
     }
 

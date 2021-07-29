@@ -1,5 +1,6 @@
 package com.aibyte.bigdata;
 
+
 import java.io.IOException;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.Cell.Type;
@@ -19,6 +20,8 @@ import org.apache.hadoop.hbase.client.Table;
 import org.apache.hadoop.hbase.client.TableDescriptor;
 import org.apache.hadoop.hbase.client.TableDescriptorBuilder;
 import org.apache.hadoop.hbase.util.Bytes;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class HBaseClientOperations {
 
@@ -46,7 +49,11 @@ public class HBaseClientOperations {
   private static final byte[] CF_SCORE_UNDERSTANDING_ROW_VALUE_TOM = Bytes.toBytes("75");
   private static final byte[] CF_SCORE_PROGRAMMING_ROW_VALUE_TOM = Bytes.toBytes("82");
 
+  private static final Logger logger
+      = LoggerFactory.getLogger(HBaseClientOperations.class);
+
   public void run(Configuration configuration) {
+    logger.debug("run ------>");
     try (Connection connection = ConnectionFactory.createConnection(configuration)) {
       Admin admin = connection.getAdmin();
 
@@ -74,22 +81,28 @@ public class HBaseClientOperations {
     } catch (IOException e) {
       e.printStackTrace();
     }
+    logger.debug("-----> end");
   }
 
   private void cleanupEnv(Admin admin) throws IOException {
+    logger.debug("> Clean up env ===============");
     deleteTable(admin);
     admin.deleteNamespace(NAMESPACE);
+    logger.debug(" Create up env  success");
   }
 
   private void createNamespace(Admin admin) throws IOException {
+    logger.debug("> Create namespace ===============");
+
     NamespaceDescriptor namespaceDescriptor = NamespaceDescriptor.create(NAMESPACE).build();
     admin.createNamespace(namespaceDescriptor);
-    System.out.println("> ===============");
-    System.out.println("Create namespace success");
-    System.out.println("> =============== <");
+
+    logger.debug(" Create namespace success");
   }
 
   private void createTable(Admin admin) throws IOException {
+    logger.debug("> Create table ===============");
+
     TableDescriptor tableDescriptor = TableDescriptorBuilder.newBuilder(TABLE_NAME)
         .setColumnFamily(
             ColumnFamilyDescriptorBuilder.newBuilder(COLUMN_FAMILY_NAME_NAME.getBytes()).build())
@@ -100,22 +113,24 @@ public class HBaseClientOperations {
         .build();
 
     admin.createTable(tableDescriptor);
-    System.out.println("> ===============");
-    System.out.println("Create table success");
-    System.out.println("> =============== <");
+
+    logger.debug(" Create table success");
   }
 
   private void deleteTable(Admin admin) throws IOException {
+    logger.debug("> Delete table ===============");
     // delete table first
     if (admin.tableExists(TABLE_NAME) && !admin.isTableDisabled(TABLE_NAME)) {
       // disable table before delete it
       admin.disableTable(TABLE_NAME);
       admin.deleteTable(TABLE_NAME);
     }
+    logger.debug("Delete table success");
   }
 
   private void put(Table table) throws IOException {
     // https://hbase.apache.org/book.html#_implicit_version_example
+    logger.debug("> Insert data ===============");
 
     Put put = new Put(CF_NAME_ROW_VALUE);// lirui
     put.addColumn(COLUMN_FAMILY_NAME_NAME.getBytes(), null, CF_NAME_ROW_VALUE);
@@ -127,12 +142,13 @@ public class HBaseClientOperations {
     put.addColumn(COLUMN_FAMILY_NAME_SCORE.getBytes(), CF_SCORE_PROGRAMMING_ROW,
         CF_SCORE_PROGRAMMING_ROW_VALUE);
     table.put(put);
-    System.out.println("> ===============");
-    System.out.println("Insert data success");
-    System.out.println("> =============== <");
+
+    logger.debug(" Insert success");
   }
 
   private void putCellVersion(Table table) throws IOException {
+    logger.debug("> Put data cell version ===============");
+
     Put put = new Put(CF_NAME_ROW_VALUE_TOM);
     put.add(
         CellBuilderFactory.create(CellBuilderType.DEEP_COPY)
@@ -174,30 +190,30 @@ public class HBaseClientOperations {
             .setValue(CF_SCORE_UNDERSTANDING_ROW_VALUE_TOM)
             .build());
     table.put(put);
-    System.out.println("> ===============");
-    System.out.println("Put data cell version success");
-    System.out.println("> =============== <");
+    logger.debug("Put data cell version success");
   }
 
   private void get(Table table) throws IOException {
+    logger.debug("> Fetch data ===============");
+
     Get get = new Get(CF_NAME_ROW_VALUE);
     Result result = table.get(get);
-    System.out.println("> ===============");
-    System.out.println("Fetch data success");
-    System.out.println("> =============== <");
-    System.out.println("===============");
-    System.out.printf("-> %s", result.toString());
+
+    logger.debug(" Fetch data success");
+    logger.debug("===============");
+    logger.debug("-> {}", result);
   }
 
   private void deleteSingleRow(Table table) throws IOException {
+    logger.debug("> Delete data ===============");
+
     Delete delete = new Delete(CF_NAME_ROW_VALUE_TOM);
     delete.addColumn(COLUMN_FAMILY_NAME_NAME.getBytes(), null);
     delete.addColumn(COLUMN_FAMILY_NAME_INFO.getBytes(), null);
     delete.addColumn(COLUMN_FAMILY_NAME_SCORE.getBytes(), null);
     table.delete(delete);
-    System.out.println("> ===============");
-    System.out.println("Delete data success");
-    System.out.println("> =============== <");
+
+    logger.debug(" Delete data success");
   }
 
 }
