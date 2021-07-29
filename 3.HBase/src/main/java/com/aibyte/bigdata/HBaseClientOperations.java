@@ -209,8 +209,10 @@ public class HBaseClientOperations {
 
     Delete delete = new Delete(CF_NAME_ROW_VALUE_TOM);
     delete.addColumn(COLUMN_FAMILY_NAME_NAME.getBytes(), null);
-    delete.addColumn(COLUMN_FAMILY_NAME_INFO.getBytes(), null);
-    delete.addColumn(COLUMN_FAMILY_NAME_SCORE.getBytes(), null);
+    delete.addColumn(COLUMN_FAMILY_NAME_INFO.getBytes(), CF_INFO_STUDENT_ID_ROW);
+    delete.addColumn(COLUMN_FAMILY_NAME_INFO.getBytes(), CF_INFO_CLASS_ROW);
+    delete.addColumn(COLUMN_FAMILY_NAME_SCORE.getBytes(), CF_SCORE_UNDERSTANDING_ROW);
+    delete.addColumn(COLUMN_FAMILY_NAME_SCORE.getBytes(), CF_SCORE_PROGRAMMING_ROW);
     table.delete(delete);
 
     logger.debug(" Delete data success");
