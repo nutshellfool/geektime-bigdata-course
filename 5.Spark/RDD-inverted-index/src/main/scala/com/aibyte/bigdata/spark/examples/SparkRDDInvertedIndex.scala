@@ -9,25 +9,43 @@ object SparkRDDInvertedIndex {
       .appName("lirui-SparkCoreRDDInvertedIndex")
       .getOrCreate()
 
-    // TODO: read input file from args[0] (hdfs path)
-    val rdd = spark.sparkContext.wholeTextFiles("file:///Users/RichardLee/Workspace/GrowingHack/geektime-bigdata-course/5.Spark/RDD-inverted-index/src/main/resources/text/*.txt")
-    rdd.flatMap {
+    if (args == null || args.length < 2) {
+      println("==== wrong parameters ====")
+      println("usage: spark-submit " +
+        "--class com.aibyte.bigdata.spark.examples.SparkRDDInvertedIndex " +
+        "--master yarn-client(local) RDD-inverted-index-1.0-SNAPSHOT.jar " +
+        "<input-file-path> " +
+        "<output-file-path>")
+      return
+    }
+
+    //  localEnvPath : "file:///Users/RichardLee/Workspace/GrowingHack/geektime-bigdata-course/5.Spark/RDD-inverted-index/src/main/resources/text/*.txt"
+    val path = args(0)
+    // localEnvPath :  "file:///Users/RichardLee/Workspace/GrowingHack/geektime-bigdata-course/5.Spark/RDD-inverted-index/target/output"
+    val outputFilePath = args(1)
+
+    //  read inputFiles and creat (word, path) tuple
+    val rdd = spark.sparkContext.wholeTextFiles(path)
+    rdd.flatMap({
       case (path, text) =>
         text.split("""\W+""").map {
           word => (word, path)
         }
-    }.map({
+    }).map({
+      // short the long path to short, and transform (word, path) to ((word, path), 1)
       case (word, path) => ((word, path.split("/").takeRight(1)(0)), 1)
     }).reduceByKey({
+      // group all (word, path) pairs and sum count
       case (n1, n2) => n1 + n2
     }).map({
+      // transform ((word, path), count) to (word, (path, count))
       case ((word, path), number) => (word, (path, number))
     }).groupBy({
-      case (word, (path, number)) => word
+      // group by word
+      case (word, _) => word
     }).map({
-      case (word, seq) => seq.mkString(",")
-    })// TODO : write output by arg[1] (hdfs path)
-      .saveAsTextFile("file:///Users/RichardLee/Workspace/GrowingHack/geektime-bigdata-course/5.Spark/RDD-inverted-index/target/output.txt")
+      // format the out put
+      case (_, seq) => seq.mkString(",")
+    }).saveAsTextFile(outputFilePath)
   }
-
 }
