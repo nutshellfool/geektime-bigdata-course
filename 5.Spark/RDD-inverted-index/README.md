@@ -16,7 +16,7 @@ this repository is a Spark project for Inverted-index application:
     * [SparkRDDInvertedIndex.scala](src/main/scala/com/aibyte/bigdata/spark/examples/SparkRDDInvertedIndex.scala)
       Code to build Inverted-index
 
-## execution example
+## Execution example
 
 ### local dev env
 
