@@ -6,5 +6,5 @@
 
 [project doc](RDD-inverted-index/README.md)
 
-### 2. disCp (spark version -- only copy)
-
+### 2. DistCp (spark version -- only copy)
+[project doc](discp-spark/README.md) -- partial implements
