@@ -51,3 +51,5 @@ new MyPushDown(session) }
 `bin/spark-sql --jars my.jar --conf spark.sql.extensions=com.jikeshijian.MySparkSessionExtension`  
 
 ### 解答3
+
+[SparkSQL Extension - maven版 解答](spark-sql-customize-opt-rule-maven/README.md)
