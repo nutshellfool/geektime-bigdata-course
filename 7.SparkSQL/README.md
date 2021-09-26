@@ -218,8 +218,7 @@ total 8
 
 #### 解题思路
 
-整体工程使用上一次作业的 `自定义优化规则` 工程；
-根据 `Insert Into` 执行计划找出其逻辑计划类型，然后在计划中添加合并小文件操作逻辑。
+TODO
 
 参考资料： [InsertIntoTable Unary Logical Operator
 ](https://jaceklaskowski.gitbooks.io/mastering-spark-sql/content/InsertIntoTable.html)
