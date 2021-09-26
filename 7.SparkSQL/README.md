@@ -2,7 +2,11 @@
 
 ## 问题
 
-### 问题1 - 实现Compact table command
+### 问题1 - 思考题:如何避免小文件问题
+
+* 如何避免小文件问题?给出2~3种解决方案
+
+### 问题2 - 实现Compact table command
 
 * 要求：
 添加compact table命令，用于合并小文件，例如表test1总共有50000个文件，每个1MB，通过该命令，合成为500个文件，每个约100MB。
@@ -15,7 +19,8 @@
 3. 以上两个算附加要求，基本要求只需要完成以下功能：
 `COMPACT TABLE test1 INTO 500 FILES;`
 
-### 问题2 - Insert命令自动合并小文件
+### 问题3 - Insert命令自动合并小文件
 
 * 我们讲过AQE可以自动调整reducer的个数，但是正常跑Insert命令不会自动合并小文件，例如insert into t1 select * from t2;
 * 请加一条物理规则（Strategy），让Insert命令自动进行小文件合并(repartition)。（不用考虑bucket表，不用考虑Hive表）
+  
