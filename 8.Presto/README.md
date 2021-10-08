@@ -1,13 +1,17 @@
 # Presto Homework
 
 ## HyperLogLog算法在Presto的应用
+
 ### 问题一
-1. 搜索HyperLogLog算法相关内容，了解其原理，写出5条
+
+* 搜索HyperLogLog算法相关内容，了解其原理，写出5条
 HyperLogLog的用途或大数据场景下的实际案例。
 
 #### 解答
+
 HyperLogLog 在大数据上的应用场景主要还是对大规模数据集中的不重复元素近似计算上。  
 常见的具体使用案例有：  
+
 * Reddit 使用HyperLogLog进行帖子的UV统计 [View Counting at Reddit](https://www.redditinc.com/blog/view-counting-at-reddit/)  
 * Google 使用HyperLogLog计算搜索查询次数 [HyperLogLog in Practice: Algorithmic Engineering of a
 State of The Art Cardinality Estimation Algorithm](https://storage.googleapis.com/pub-tools-public-publication-data/pdf/40671.pdf)
@@ -17,13 +21,15 @@ State of The Art Cardinality Estimation Algorithm](https://storage.googleapis.co
 * AWS RedShift 近期又提供了队HLL函数的支持 [Amazon Redshift -- HLL function](https://docs.aws.amazon.com/redshift/latest/dg/r_HLL_function.html) 与此同时官方还提供了一个统计订单数及库存分析的例子 [Use HyperLogLog for trend analysis with Amazon Redshift](https://aws.amazon.com/cn/blogs/big-data/use-hyperloglog-for-trend-analysis-with-amazon-redshift/)
 
 #### 其他参考
+
 * [HyperLogLog - Wikipedia](https://en.wikipedia.org/wiki/HyperLogLog)
 * [Probabilistic Data Structures for Web Analytics and Data Mining - Highly Scalable Blog](https://highlyscalable.wordpress.com/2012/05/01/probabilistic-structures-web-analytics-data-mining/)
 * [HyperLogLog in Presto: Faster cardinality estimation - Facebook Engineering](https://engineering.fb.com/2018/12/13/data-infrastructure/hyperloglog/)
 * [My favorite algorithm (and data structure): HyperLogLog](https://odino.org/my-favorite-data-structure-hyperloglog/)
 
-### 问题二 
-2. 在本地docker环境或阿里云e-mapreduce环境进行SQL查询，
+### 问题二
+
+* 在本地docker环境或阿里云e-mapreduce环境进行SQL查询，
 要求在Presto中使用HyperLogLog计算近似基数。（请自行创
 建表并插入若干数据）
 
@@ -132,6 +138,7 @@ WHERE visit_date >= current_date - interval '7' day;
 Aliyun EMR 运行结果：  
 
 运行日志：  
+
 ```shell
 submitting...
 submit the task successfully
@@ -223,5 +230,33 @@ Sat Sep 25 16:48:12 CST 2021 [YarnJobLauncherAM] INFO Closing launcher am ...
 实际精确结果：46 
 HyperLogLog 结果与实际精确结果在数据量较小的数据集中存在一定误差，在大数据集中结果待验证，另外还未找到高效倒入大批数据到PrestoSQL的方法，这部分在找到高效方法后验证。  
 
-3. 学习使用Presto-Jdbc库连接docker或e-mapreduce环境，重
+### 问题三
+
+* 学习使用Presto-Jdbc库连接docker或e-mapreduce环境，重
 复上述查询。（选做）
+
+#### 解答（3）
+
+[解答 - Java 工程源代码](presto-jdbc-example/src/main/java/com/aibyte/bigdata/presto/examples/MainApplication.java)
+
+以上配置为使用EMR集群内部连接方式（外部网络 Presto  coordinator 连接端口 9090 未开放）。  
+
+所以部署需要将编译好的Jar包上传到集群上运行。  
+
+* 编译：  
+
+```shell
+mvn clean package
+```
+
+* 运行（emr-header-1）
+
+```shell
+java -jar presto-jdbc-example-1.0-SNAPSHOT.jar
+```
+
+* 输出结果
+
+```shell
+Row 1, Column 1: 49
+```
