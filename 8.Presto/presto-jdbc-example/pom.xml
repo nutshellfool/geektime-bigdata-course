@@ -25,7 +25,6 @@
       <groupId>io.prestosql</groupId>
       <artifactId>presto-jdbc</artifactId>
       <version>338</version>
-<!--      <scrope>provided</scrope>-->
     </dependency>
   </dependencies>
 
@@ -52,7 +51,6 @@
           </execution>
         </executions>
       </plugin>
-
     </plugins>
   </build>
 

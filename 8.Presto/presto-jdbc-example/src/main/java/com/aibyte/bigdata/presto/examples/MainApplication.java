@@ -22,10 +22,10 @@ public class MainApplication {
       System.exit(-1);
     }
 
-//    String url = "jdbc:presto://106.15.194.185:9090/hive/default";
-    String url = "jdbc:presto://emr-header-1:9090/hive/default";
-    String sql = "SELECT cardinality(merge(cast(hll AS HyperLogLog))) AS weekly_unique_users\n"
-        + "FROM visit_summaries\n"
+    String url = "jdbc:presto://106.15.194.185:9090/hive/default";
+//    String url = "jdbc:presto://emr-header-1:9090/hive/default";
+    String sql = "SELECT cardinality(merge(cast(hll AS HyperLogLog))) AS weekly_unique_users "
+        + "FROM visit_summaries "
         + "WHERE visit_date >= current_date - interval '7' day";
     try (Connection connection = DriverManager.getConnection(url, "hadoop", null)) {
       try (Statement statement = connection.createStatement()) {
