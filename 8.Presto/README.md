@@ -239,9 +239,7 @@ HyperLogLog 结果与实际精确结果在数据量较小的数据集中存在�
 
 [解答 - Java 工程源代码](presto-jdbc-example/src/main/java/com/aibyte/bigdata/presto/examples/MainApplication.java)
 
-以上配置为使用EMR集群内部连接方式（外部网络 Presto  coordinator 连接端口 9090 未开放）。  
-
-所以部署需要将编译好的Jar包上传到集群上运行。  
+以上配置为使用EMR集群内部和外网连接方式均已验证。  
 
 * 编译：  
 
@@ -249,7 +247,7 @@ HyperLogLog 结果与实际精确结果在数据量较小的数据集中存在�
 mvn clean package
 ```
 
-* 运行（emr-header-1）
+* 运行（emr-header-1 或者 本地环境运行）
 
 ```shell
 java -jar presto-jdbc-example-1.0-SNAPSHOT.jar
