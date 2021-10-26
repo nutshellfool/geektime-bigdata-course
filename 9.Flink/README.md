@@ -26,3 +26,18 @@ report(transactions).executeInsert("spend_report");
 ```
 
 ## 运行结果日志
+
+```sql
+mysql> select count(*) from spend_report;
++----------+
+| count(*) |
++----------+
+|    32920 |
++----------+
+1 row in set (0.01 sec)
+
+
+```
+Gafana screenshot:  
+
+![Gafana](image/flink-table-walkthrough.png)
