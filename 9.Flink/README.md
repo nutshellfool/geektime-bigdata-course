@@ -12,17 +12,17 @@ report(transactions).executeInsert("spend_report");
 `SpendReport.java`
 
 ```Java
-    public static Table report(Table transactions) {
-//        return transactions;
-        return transactions
-            .window(Tumble.over(lit(1).hour()).on($("transaction_time")).as("log_ts"))
-            .groupBy($("account_id"), $("log_ts"))
-            .select(
-                $("account_id"),
-                $("log_ts").start().as("log_ts"),
-                $("amount").avg().as("amount"));
-    }
-
+  public static Table report(Table transactions) {
+    return transactions
+        .window(
+            Slide.over(lit(5).minute()).every(lit(1).minute())
+                .on($("transaction_time")).as("log_ts"))
+        .groupBy($("account_id"), $("log_ts"))
+        .select(
+            $("account_id"),
+            $("log_ts").start().as("log_ts"),
+            $("amount").avg().as("amount"));
+  }
 ```
 
 ## 运行结果日志
@@ -32,12 +32,12 @@ mysql> select count(*) from spend_report;
 +----------+
 | count(*) |
 +----------+
-|    32920 |
+|    10666 |
 +----------+
-1 row in set (0.01 sec)
-
+1 row in set (0.00 sec)
 
 ```
+
 Gafana screenshot:  
 
 ![Gafana](image/flink-table-walkthrough.png)
